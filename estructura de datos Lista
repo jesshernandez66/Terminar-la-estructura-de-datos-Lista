@@ -1,0 +1,107 @@
+import random as rnd
+
+
+class almacen:
+    def _init_(self, d, a, m):
+        self.dato = d
+        self.memoria = m
+        self.apuntador = a
+
+
+class listaLigada:
+    def _init_(self, n=50, ini=None):
+        self.almacenes = []
+        self.tamanio = 0
+        for i in range(n):
+            self.almacenes += [None]
+        if (ini == None):
+            self.ultimo = -1
+            self.ocupados = []
+            self.inicio = None
+        else:
+            self.ultimo = rnd.randint(1, n)
+            self.ocupados = [self.ultimo]
+            self.inicio = almacen(ini, -1, self.ultimo)
+            self.almacenes[self.ultimo - 1] = self.inicio
+            self.tamanio = 1
+
+    def push(self, dato):
+        if (self.tamanio >= 50):
+            print("Error: La lista está llena")
+        else:
+            if (self.tamanio == 0):
+                self.ultimo = rnd.randint(1, 50)
+                self.ocupados = [self.ultimo]
+                self.inicio = almacen(dato, -1, self.ultimo)
+                self.almacenes[self.ultimo - 1] = self.inicio
+            else:
+                prox = rnd.randint(1, 50)
+                while (prox in self.ocupados):
+                    prox = rnd.randint(1, 50)
+                self.almacenes[self.ultimo - 1].apuntador = prox
+                self.ultimo = prox
+                self.ocupados += [self.ultimo]
+                self.almacenes[self.ultimo - 1] = almacen(dato, -1, self.ultimo)
+            self.tamanio += 1
+
+    def pop(self):
+        if (self.tamanio > 1):
+            penultimo = self.ocupados[-2]
+            self.ocupados = self.ocupados[:-1]
+            dato = self.almacenes[self.ultimo - 1].dato
+            self.almacenes[self.ultimo - 1] = None
+            self.almacenes[penultimo - 1].apuntador = -1
+            self.ultimo = penultimo
+            self.tamanio -= 1
+            return dato
+        elif (self.tamanio == 1):
+            self.ocupados = []
+            dato = self.almacenes[self.ultimo - 1].dato
+            self.almacenes[self.ultimo - 1] = None
+            self.inicio = None
+            self.ultimo = -1
+            self.tamanio -= 1
+            return dato
+        else:
+            print("Error: No hay elementos en la lista")
+
+    def remove(self, dato):
+        if self.tamanio == 0:
+            print("Error: La lista está vacía")
+            return
+        anterior = None
+        actual = self.inicio
+        while actual is not None and actual.dato != dato:
+            anterior = actual
+            actual = self.almacenes[actual.apuntador - 1]
+        if actual is None:
+            print("Error: El elemento no se encuentra en la lista")
+            return
+        if anterior is None:
+            self.inicio = self.almacenes[actual.apuntador - 1]
+        else:
+            anterior.apuntador = actual.apuntador
+        self.almacenes[actual.apuntador - 1] = None
+        self.tamanio -= 1
+
+
+        def insert(self, dato, posicion):
+            if posicion < 0 or posicion > self.tamanio:
+                print("Posición no válida")
+                return
+            if self.tamanio == 0 or posicion == 0:
+                self.push(dato)  # Insertar al principio
+            else:
+                nuevo_almacen = almacen(dato, -1, -1)
+                if posicion == self.tamanio:  # Insertar al final
+                    self.almacenes[self.ultimo - 1].apuntador = self.tamanio + 1
+                    self.ultimo = self.tamanio + 1
+                else:
+                    anterior = self.almacenes[self.inicio.apuntador - 1]
+                    for i in range(posicion - 1):
+                        anterior = self.almacenes[anterior.apuntador - 1]
+                    nuevo_almacen.apuntador = anterior.apuntador
+                    anterior.apuntador = self.tamanio + 1
+
+                self.almacenes.append(nuevo_almacen)
+                self.tamanio += 1
